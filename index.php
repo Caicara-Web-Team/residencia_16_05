@@ -1,14 +1,23 @@
-<?php
+    <?php
+    // comunicacao com o banco de dados
+    include('conect.php');
 
+    //captar as infos da empresa
+    $info = $database->getReference('caicara/ribeirinho/')->getValue();
 
-?>
+    //listas dos produtos
+    $ListaDeProdutos = $database->getReference('caicara/ribeirinho/')->getSnapshot();
+    
+    
+
+    ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style/style_index.css">
+    <link rel="stylesheet" href="style/index.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caiçara</title>
 </head>
@@ -23,6 +32,7 @@
             <div class="Conteudo">
                 <a href="">Home</a>
                 <a href="">Quem somos</a>
+                <a href="formulario.php">Cadastro</a>
                 <a href="">Controle</a>
             </div>
         </div>
@@ -65,10 +75,33 @@
             <h1>Nossos produtos</h1>
         </div>
         <div class="lista">
-            <div class="produto">
-                <img src="img/tilapia60.jpg">
-            </div>
-            <div class="produto">
+
+            <?php foreach($ListaDeProdutos->getValue() as $produto): ?>
+
+                <!-- produto 1 -->
+                <div class="produto">
+                    <?php
+                    //coletar a img
+                    $imagemColetadaJPG = 'img/finais/'.$produto['nome'].'.jpg';
+                    $imagemColetadaPNG = 'img/finais/'.$produto['nome'].'.png';
+
+                    if(file_exists($imagemColetadaJPG)){
+                        $image = $imagemColetadaJPG;
+                    }else{
+                        $image = $imagemColetadaPNG;
+                    }
+                    ?>
+                    <img src="<?php echo $image?>" class="imagem_produto">
+                    <h5>Nome: <?php echo $produto['nome']; ?></h5>
+                    <h5>Valor: R$<?php echo $produto['valor']; ?></h5>
+                    <!-- criamos uma variavel para armazenar o link de redirecionamento -->
+                    <?php $link = 'preview.php?id='. $produto['chave']; ?>
+                    <a href="<?php echo $link ?>" class="submit">Comprar</a>
+                </div>
+
+            <?php endforeach ?>
+
+            <!-- <div class="produto">
                 <img src="img/robalo.jpg">
             </div>
             <div class="produto">
@@ -82,7 +115,7 @@
             </div>
             <div class="produto">
                 <img src="img/atum.jpg">
-            </div>
+            </div> -->
 
         </div>
     </div>
